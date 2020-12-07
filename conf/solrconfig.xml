@@ -190,6 +190,10 @@
         city_ssim
       </str>
 
+      <str name="transcription_qf">
+        transcription_tesim
+      </str>
+
        <int name="ps">3</int>
        <float name="tie">0.01</float>
 
