@@ -146,7 +146,7 @@
          purposes.  The ordering is generated based on the field name
          and the version of the index, As long as the index version
          remains unchanged, and the same field name is reused,
-         the ordering of the docs will be consistent. 
+         the ordering of the docs will be consistent.
          If you want different psuedo-random orderings of documents,
          for the same version of the index, use a dynamicField and
          change the name
@@ -354,10 +354,10 @@
              matching a pattern with an arbitrary replacement string,
              which may include back references to portions of the original
              string matched by the pattern.
-            
+
              See the Java Regular Expression documentation for more
              information on pattern and replacement string syntax.
-            
+
              http://java.sun.com/j2se/1.5.0/docs/api/java/util/regex/package-summary.html
           -->
         <filter class="solr.PatternReplaceFilterFactory"
@@ -365,7 +365,7 @@
         />
       </analyzer>
     </fieldType>
-   
+
     <fieldtype name="phonetic" stored="false" indexed="true" class="solr.TextField" >
       <analyzer>
         <tokenizer class="solr.StandardTokenizerFactory"/>
@@ -402,6 +402,16 @@
     <fieldType name="text_path" class="solr.TextField" positionIncrementGap="100">
       <analyzer>
         <tokenizer class="solr.PathHierarchyTokenizerFactory"/>
+      </analyzer>
+    </fieldType>
+
+    <fieldType name="text_general_edge_ngram" class="solr.TextField" positionIncrementGap="100">
+      <analyzer type="index">
+        <tokenizer class="solr.LowerCaseTokenizerFactory"/>
+        <filter class="solr.EdgeNGramFilterFactory" minGramSize="2" maxGramSize="15"/>
+      </analyzer>
+      <analyzer type="query">
+        <tokenizer class="solr.LowerCaseTokenizerFactory"/>
       </analyzer>
     </fieldType>
 
@@ -449,7 +459,7 @@
        given field.
        When using MoreLikeThis, fields used for similarity should be
        stored for best performance.
-     termPositions: Store position information with the term vector. 
+     termPositions: Store position information with the term vector.
        This will increase storage costs.
      termOffsets: Store offset information with the term vector. This
        will increase storage costs.
@@ -457,11 +467,19 @@
        when adding a document.
    -->
 
+    <!-- If you remove this field, you must _also_ disable the update log in solrconfig.xml
+      or Solr won't start. _version_ and update log are required for SolrCloud
+   -->
+    <field name="_version_" type="long" indexed="true" stored="true" />
+
     <!-- NOTE: this is not a full list of fields in the index; dynamic fields are also used -->
     <field name="id" type="string" indexed="true" stored="true" required="true" />
     <field name="timestamp" type="date" indexed="true" stored="true" default="NOW" multiValued="false"/>
     <field name="text" type="text" indexed="true" stored="false" multiValued="true"/>
     <field name="title_display" type="string" indexed="false" stored="true" multiValued="false"/>
+
+    <field name="id_ng" type="text_general_edge_ngram" indexed="true" stored="true" />
+    <field name="title_ng" type="text_general_edge_ngram" indexed="true" stored="true" />
 
     <field name="language_facet" type="string" indexed="true" stored="true" multiValued="true" />
     <field name="subject_topic_facet" type="string" indexed="true" stored="true" multiValued="true" />
@@ -652,6 +670,10 @@
    <copyField source="collection_name_ssi" dest="suggest"/>
    <copyField source="contributor_ssim" dest="suggest"/>
    <copyField source="topic_ssi" dest="suggest"/>
+
+   <copyField source="title_tesi" dest="title_ng" />
+   <copyField source="id" dest="id_ng" />
+
 
    <!-- Above, multiple source fields are copied to the [text] field.
     Another way to map multiple source fields to the same

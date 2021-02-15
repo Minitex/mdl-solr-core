@@ -387,6 +387,9 @@
       <maxDocs>1000</maxDocs>
       <maxTime>300000</maxTime>
     </autoCommit>
+    <updateLog>
+      <str name="dir">${solr.ulog.dir:}</str>
+    </updateLog>
   </updateHandler>
 
 </config>
