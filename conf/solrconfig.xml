@@ -118,6 +118,7 @@
          kaltura_video_ssi
          local_identifier_ssi
          identifier_ssi
+         identifier_ssim
 
          type_ssi
          type_tesi
