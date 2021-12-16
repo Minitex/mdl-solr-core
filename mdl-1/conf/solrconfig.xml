@@ -390,4 +390,7 @@
     </autoCommit>
   </updateHandler>
 
+  <updateLog>
+    <str name="dir">${solr.ulog.dir:}</str>
+  </updateLog>
 </config>
