@@ -45,7 +45,7 @@
     that avoids logging every request
 -->
 
-<schema name="Minnesota Reflections IIIF Search" version="1.5">
+<schema name="Minnesota Reflections IIIF Search" version="1.6">
   <!-- attribute "name" is the name of this schema and is only used for display purposes.
        Applications should change this to reflect the nature of the search collection.
        version="1.4" is Solr's version number for the schema syntax and semantics.  It should
@@ -91,27 +91,12 @@
     -->
 
     <!--
-      Default numeric field types. For faster range queries, consider the tint/tfloat/tlong/tdouble types.
+      Default numeric field types.
     -->
-    <fieldType name="int" class="solr.TrieIntField" precisionStep="0" omitNorms="true" positionIncrementGap="0"/>
-    <fieldType name="float" class="solr.TrieFloatField" precisionStep="0" omitNorms="true" positionIncrementGap="0"/>
-    <fieldType name="long" class="solr.TrieLongField" precisionStep="0" omitNorms="true" positionIncrementGap="0"/>
-    <fieldType name="double" class="solr.TrieDoubleField" precisionStep="0" omitNorms="true" positionIncrementGap="0"/>
-
-    <!--
-     Numeric field types that index each value at various levels of precision
-     to accelerate range queries when the number of values between the range
-     endpoints is large. See the javadoc for NumericRangeQuery for internal
-     implementation details.
-
-     Smaller precisionStep values (specified in bits) will lead to more tokens
-     indexed per value, slightly larger index size, and faster range queries.
-     A precisionStep of 0 disables indexing at different precision levels.
-    -->
-    <fieldType name="tint" class="solr.TrieIntField" precisionStep="8" omitNorms="true" positionIncrementGap="0"/>
-    <fieldType name="tfloat" class="solr.TrieFloatField" precisionStep="8" omitNorms="true" positionIncrementGap="0"/>
-    <fieldType name="tlong" class="solr.TrieLongField" precisionStep="8" omitNorms="true" positionIncrementGap="0"/>
-    <fieldType name="tdouble" class="solr.TrieDoubleField" precisionStep="8" omitNorms="true" positionIncrementGap="0"/>
+    <fieldType name="int" class="solr.IntPointField" docValues="true"/>
+    <fieldType name="float" class="solr.FloatPointField" docValues="true"/>
+    <fieldType name="long" class="solr.LongPointField" docValues="true"/>
+    <fieldType name="double" class="solr.DoublePointField" docValues="true"/>
 
     <!-- The format for this date field is of the form 1995-12-31T23:59:59Z, and
          is a more restricted form of the canonical representation of dateTime
@@ -135,10 +120,7 @@
 
          Note: For faster range queries, consider the tdate type
       -->
-    <fieldType name="date" class="solr.TrieDateField" omitNorms="true" precisionStep="0" positionIncrementGap="0"/>
-
-    <!-- A Trie based date field for faster date range queries and date faceting. -->
-    <fieldType name="tdate" class="solr.TrieDateField" omitNorms="true" precisionStep="6" positionIncrementGap="0"/>
+    <fieldType name="date" class="solr.DatePointField" docValues="true"/>
 
     <!-- The "RandomSortField" is not used to store or search any
          data.  You can declare fields of this type it in your schema
@@ -308,7 +290,6 @@
       <analyzer>
         <tokenizer class="solr.StandardTokenizerFactory"/>
         <filter class="solr.StopFilterFactory" ignoreCase="true" words="stopwords.txt"/>
-        <filter class="solr.StandardFilterFactory"/>
         <filter class="solr.LowerCaseFilterFactory"/>
         <filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
       </analyzer>
@@ -317,7 +298,6 @@
     <fieldType class="solr.TextField" name="textSuggest" positionIncrementGap="100">
        <analyzer>
           <tokenizer class="solr.KeywordTokenizerFactory"/>
-          <filter class="solr.StandardFilterFactory"/>
           <filter class="solr.LowerCaseFilterFactory"/>
           <filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
        </analyzer>
@@ -499,11 +479,8 @@
    -->
  <uniqueKey>id</uniqueKey>
 
- <!-- field for the QueryParser to use when an explicit fieldname is absent -->
- <defaultSearchField>line</defaultSearchField>
-
  <!-- SolrQueryParser configuration: defaultOperator="AND|OR" -->
- <solrQueryParser defaultOperator="OR"/>
+ <!-- SolrQueryParser configuration moved to solrconfig.xml in Solr 8+ -->
 
    <!-- for suggestions -->
    <!-- <copyField source="title_ssi" dest="suggest"/>
