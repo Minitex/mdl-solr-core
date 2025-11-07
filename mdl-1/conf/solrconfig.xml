@@ -28,7 +28,7 @@
        that you fully re-index after changing this setting as it can
        affect both how text is indexed and queried.
   -->
-  <luceneMatchVersion>5.0.0</luceneMatchVersion>
+  <luceneMatchVersion>8.11.3</luceneMatchVersion>
 
   <lib dir="${solr.install.dir:../../../..}/contrib/analysis-extras/lib" />
   <lib dir="${solr.install.dir:../../../..}/contrib/analysis-extras/lucene-libs" />
@@ -72,7 +72,8 @@
        <str name="defType">dismax</str>
        <str name="echoParams">explicit</str>
        <int name="rows">10</int>
-`       <str name="q.alt">*:*</str>
+       <str name="q.alt">*:*</str>
+       <str name="q.op">OR</str>
        <str name="mm">2&lt;-1 5&lt;-2 6&lt;90%</str>
 
        <!-- this qf and pf are used by default, if not otherwise specified by
@@ -265,7 +266,6 @@
     <arr name="last-components">
       <str>spellcheck</str>
     </arr>
-
   </requestHandler>
 
   <!-- for requests to get a single document; use id=666 instead of q=id:666 -->
